@@ -1,4 +1,6 @@
-const db = {
+const Sequelize = require("sequelize");
+
+const dbData = {
   MYSQL_ID: process.env.MYSQL_ID || "root",
   MYSQL_PASSWD: process.env.MYSQL_PASSWD || "123123",
   MYSQL_HOST: process.env.MYSQL_HOST || "localhost",
@@ -12,6 +14,24 @@ const db = {
   },
 };
 
-db.getMysqlUri = db.getMysqlUri.bind(db);
+dbData.getMysqlUri = dbData.getMysqlUri.bind(dbData);
+
+const sequelize = new Sequelize(dbData.getMysqlUri(), {
+  pool: {
+    max: 5,
+    min: 0,
+    acquire: 30000,
+    idle: 10000,
+  },
+});
+
+//models
+const Todo = require("../models/todo")(sequelize, Sequelize);
+
+const db = {
+  Sequelize,
+  sequelize,
+  Todo,
+};
 
 module.exports = db;

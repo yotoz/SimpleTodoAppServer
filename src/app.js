@@ -16,19 +16,8 @@ app.use(express.json());
 app.use("/api/v1", todoRouter);
 
 // database
-const sequelize = new Sequelize(getMysqlUri());
-
-sequelize
-  .authenticate()
-  .then(() => {
-    console.log("Mysql Connection established successfully.");
-  })
-  .catch((err) => {
-    console.error("Unable to connect to the database:", err);
-  })
-  .finally(() => {
-    sequelize.close();
-  });
+const db = require("./config/db");
+db.sequelize.sync();
 
 // web server
 app.listen(PORT, () => {
